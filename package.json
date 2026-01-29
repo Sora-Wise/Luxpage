@@ -1,0 +1,23 @@
+{
+  "name": "lux-pro-store",
+  "version": "1.0.0",
+  "description": "Professional luxurious store template (Node.js + static frontend)",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^4.22.1",
+    "fs-extra": "^11.3.3",
+    "node-fetch": "^3.3.2",
+    "nodemailer": "^6.10.1",
+    "uuid": "^9.0.1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
