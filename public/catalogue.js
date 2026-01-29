@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         items.forEach(p => {
             const el = document.createElement('div');
             el.className = 'card';
-            el.innerHTML = `<img src="${p.image}"><div class="title">${p.name}</div><div class="price">${fmt(p.price)}</div><div style="margin-top:auto;display:flex;gap:8px"><button class="btn add" data-id="${p.id}">Add to cart</button><button class="secondary view" data-id="${p.id}">View</button></div>`;
+            el.innerHTML = `<img src="${p.image}"><div class="title">${p.name}</div><div class="price">${fmt(p.price)}</div><div style="margin-top:auto;display:flex;gap:8px"><button class="secondary view" data-id="${p.id}">View</button></div>`;
             list.appendChild(el);
         }
         );
