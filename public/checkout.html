@@ -1,0 +1,187 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Checkout</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <header class="header">
+<div class = "brand">
+            <div class="logo">
+                <img src="Logo.png">
+            </div>
+    <div style = "line-height:1">
+                <div>Lux Store</div>
+                <div style="font-size:12px;color:var(--muted)">Curated luxury goods</div>
+            </div>
+            </div>
+        </header>
+        <main class="container">
+            <h2>Checkout</h2>
+            <div class="card" style="padding:18px">
+                <form id="checkout-form" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                    <input name="firstName" class="input" placeholder="First name" required>
+                    <input name="lastName" class="input" placeholder="Last name" required>
+                    <input name="email" class="input" type="email" placeholder="E-mail" required>
+                    <input name="state" class="input" placeholder="State" required>
+                    <input name="phone" class="input" placeholder="Phone Number" required>
+                    <input name="city" class="input" placeholder="City" required>
+
+                    <input name="street" class="input" placeholder="Street address" style="grid-column:1/-1" required>
+                    <input name="apartment" class="input" placeholder="Apartment, suite, etc. (optional)" style="grid-column:1/-1">
+
+                    <input name="postalCode" class="input" placeholder="Postal code" required>
+                    <div class="crypto-select">
+    <label>Payment currency</label>
+    <div class="crypto-dropdown" id="cryptoDropdown">
+        <div class="crypto-selected" id="cryptoSelected">
+            <img src="/icons/btc.png">
+            <span>Bitcoin (BTC)</span>
+        </div>
+        <div class="crypto-options" id="cryptoOptions">
+            <div data-coin="btc"><img src="/icons/btc.png"> Bitcoin (BTC)</div>
+            <div data-coin="eth"><img src="/icons/eth.png"> Ethereum (ETH)</div>
+            <div data-coin="sol"><img src="/icons/sol.png"> Solana (SOL)</div>
+            <div data-coin="usdt"><img src="/icons/usdt.png"> Tether (USDT)</div>
+        </div>
+    </div>
+</div>    
+                    <input name="txid" class="input" placeholder="Transaction ID (TXID)" style="grid-column:1/-1" required>
+                    <div class="checkout-actions">
+    <div class="help-wrap">
+        <div class="help-btn">?</div>
+        <div class="help-popup">
+            <strong>Transaction ID</strong><br><br>
+            Required for payment confirmation.<br>
+            each transaction has a unique transaction ID (TXID). after transferring the required amount to pay for the order,<br>
+            open the details of the transaction and copy the TXID (transaction id),<br>
+            and insert it into the correct field. 
+        </div>
+    </div>
+
+    <button class="btn" type="submit">Place order</button>
+</div>
+<div id="crypto-box" class="crypto-box">
+    <div class="crypto-title">Crypto payment amount</div>
+    <div class="crypto-line">
+        <span>Total in USD</span>
+        <strong id="usd-total">$0.00</strong>
+    </div>
+    <div class="crypto-line accent">
+        <span>Total in BTC</span>
+        <strong id="btc-total">Loading…</strong>
+    </div>
+    <div class="crypto-line accent">
+        <span>Total in ETH</span>
+        <strong id="eth-total">Loading…</strong>
+    </div>
+    <div class="crypto-line accent">
+        <span>Total in SOL</span>
+        <strong id="sol-total">Loading…</strong>
+    </div>
+    <div class="crypto-note">
+        Exchange rate is live and will be locked after placing your order.
+    </div>
+</div>
+                </form>
+            </div>
+        </main>
+        <script src="main.js"></script>
+            <script>
+let selectedCoin = "btc";
+
+cryptoSelected.onclick = () => {
+    cryptoOptions.style.display =
+      cryptoOptions.style.display === "block" ? "none" : "block";
+};
+
+cryptoOptions.querySelectorAll("div").forEach(opt => {
+    opt.onclick = () => {
+        selectedCoin = opt.dataset.coin;
+        cryptoSelected.innerHTML = opt.innerHTML;
+        cryptoOptions.style.display = "none";
+    };
+});
+</script>
+
+        <script>
+           document.getElementById("checkout-form").addEventListener("submit", async e=>{
+ e.preventDefault();
+
+ const cart = loadCart();
+ if(cart.length === 0) return alert("Cart empty");
+
+ const data = new FormData(e.target);
+
+ const shipping = {
+  firstName:data.get("firstName"),
+  lastName:data.get("lastName"),
+  email:data.get("email"),
+  phone:data.get("phone"),
+  city:data.get("city"),
+  street:data.get("street"),
+  apartment:data.get("apartment"),
+  postalCode:data.get("postalCode")
+ };
+
+const COIN_MAP = {
+  btc: "bitcoin",
+  eth: "ethereum",
+  sol: "solana",
+  usdt: "tether"
+};
+
+const coin = COIN_MAP[selectedCoin];
+ const usdTotal = cartTotal();
+
+ const res = await fetch("/api/order/create",{
+  method:"POST",
+  headers:{ "content-type":"application/json" },
+  body:JSON.stringify({ cart, shipping, coin, usdTotal })
+ });
+
+ const order = await res.json();
+ if(!res.ok) return alert(order.error);
+
+ localStorage.setItem("lux_payment_coin", order.coin);
+
+ location.href = `/pay.html?order=${order.id}`;
+});
+
+        </script>
+        <script>
+ function updateCryptoBox() {
+    const usd = cartTotal();
+    const usdEl = document.getElementById("usd-total");
+    const btcEl = document.getElementById("btc-total");
+    const ethEl = document.getElementById("eth-total")
+    const solEl = document.getElementById("sol-total")
+
+    if (usdEl) usdEl.textContent = fmt(usd);
+
+    const btc = usdToCrypto(usd, "bitcoin");
+    if (btcEl && btc) {
+        btcEl.textContent = btc.toFixed(6) + " BTC";
+    }
+    const eth = usdToCrypto(usd, "ethereum");
+    if (ethEl && eth) {
+        ethEl.textContent = eth.toFixed(6) + " ETH";
+    }
+    const sol = usdToCrypto(usd, "solana");
+    if (solEl && sol) {
+        solEl.textContent = sol.toFixed(6) + " SOL";
+    }
+    const usdt = usd;
+    if(usdEl && usdt) {
+        usdEl.textContent = usd.toFixed(2) + " USDT"
+    }
+    
+}
+
+document.addEventListener("crypto-ready", updateCryptoBox);
+document.addEventListener("DOMContentLoaded", updateCryptoBox);
+</script>
+    </body>
+</html>

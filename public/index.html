@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Lux Store — Home</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <header class="header">
+<div class = "brand">
+            <div class="logo">
+                <img src="Logo.png">
+            </div>
+		<div style = "line-height:1">
+                <div>Lux Store</div>
+                <div style="font-size:12px;color:var(--muted)">Curated luxury goods</div>
+            </div>
+</div>
+            <nav class="nav" aria-label="Main navigation">
+                <a href="catalogue.html" class="notextdecoration"><div class = "nav-item">Catalogue</div></a>
+                <div class="nav-divider"></div>
+                <a href="about.html" class="notextdecoration"><div class = "nav-item">About Us</div></a>
+                <div class="nav-divider"></div>
+                <a href="cart.html" class="notextdecoration"><div class = "nav-item">Cart</div></a>
+            </nav>
+        </header>
+        <div class="hero-wrap">
+            <div class="hero">
+                <img src="MainImage.jpg" alt="Hero image">
+                <div class="hero-text">
+                    <h1>Welcome to Lux</h1>
+                    <p>Where timeless luxury meets the future of ownership.</p>
+                </div>
+            </div>
+        </div>
+        <main class="container">
+            <div class="section-title">
+                <h2>Favourites</h2>
+                <a href="catalogue.html" class="secondary">All</a>
+            </div>
+            <div class="products-grid" id="featured"></div>
+        </main>
+        <footer style="text-align:center;padding:24px;color:var(--muted)">
+            © 2026 <span id="yr"></span>
+            Lux Page
+        </footer>
+        <script src="main.js"></script>
+        <script>
+            document.getElementById('yr').textContent = new Date().getFullYear();
+            (async () => {
+                const res = await fetch('/products.json');
+                const products = await res.json();
+                const f = document.getElementById('featured');
+                products.slice(0, 3).forEach(p => {
+                    const el = document.createElement('div');
+                    el.className = 'card';
+                    el.innerHTML = `<img src="${p.image}"><div class="title">${p.name}</div><div class="price">${fmt(p.price)}</div><div style="margin-top:auto"><button class="btn add" data-id="${p.id}">Add to cart</button></div>`;
+                    f.appendChild(el);
+                }
+                );
+                f.querySelectorAll('.add').forEach(btn => btn.addEventListener('click', () => {
+                    const id = btn.dataset.id;
+                    const prod = products.find(x => x.id === id);
+                    addToCart(prod, 1);
+                    alert('Added: ' + prod.name);
+                }
+                ));
+            }
+            )();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,62 @@
+[
+{
+  "id":"cigar1",
+  "name":"Obsidian Cigar Set",
+  "price":420,
+  "category":"Smoking",
+  "subcategory":"Cigar Accessories",
+  "description":"Handcrafted obsidian cigar set designed for luxury lounges.",
+  "images":[
+    "products/cigar1/1.jpg",
+    "products/cigar1/2.jpg",
+    "products/cigar1/3.jpg"
+  ],
+  "sizes":["Standard","Executive","Collector"],
+  "characteristics":[
+    {"name":"Material","value":"Obsidian & Steel"},
+    {"name":"Weight","value":"1.2kg"},
+    {"name":"Origin","value":"Italy"},
+    {"name":"Includes","value":"Cutter, lighter, ashtray"}
+  ]
+},
+  {
+    "id": "p2",
+    "name": "Noir Dining Table",
+    "category": "furniture",
+    "subcategory": "tables",
+    "price": 499.0,
+    "image": "/images/placeholder-table.png"
+  },
+  {
+    "id": "p3",
+    "name": "Velvet Cushion Set",
+    "category": "furniture",
+    "subcategory": "decor",
+    "price": 59.0,
+    "image": "/images/placeholder-cushion.png"
+  },
+  {
+    "id": "p4",
+    "name": "Chrono Luxe Watch",
+    "category": "electronics",
+    "subcategory": "watches",
+    "price": 1299.0,
+    "image": "/images/placeholder-watch.png"
+  },
+  {
+    "id": "p5",
+    "name": "Silence Pro Earphones",
+    "category": "electronics",
+    "subcategory": "earphones",
+    "price": 199.0,
+    "image": "/images/placeholder-earphones.png"
+  },
+  {
+    "id": "p6",
+    "name": "Obsidian Lamp",
+    "category": "decor",
+    "subcategory": "lighting",
+    "price": 149.0,
+    "image": "/images/placeholder-lamp.png"
+  }
+]

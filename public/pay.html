@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Lux Store — Crypto Payment</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="header">
+    <div class="brand">
+        <div class="logo"><img src="Logo.png"></div>
+        <div style="line-height:1">
+            <div>Lux Store</div>
+            <div style="font-size:12px;color:var(--muted)">Curated luxury goods</div>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+<div class="pay-wrapper">
+<div class="card" style="max-width:520px;margin:40px auto;padding:24px;text-align:center">
+
+    <h2>Bitcoin payment</h2>
+
+
+    <p style="color:var(--muted)">
+        Send exactly the amount below to complete your order.
+    </p>
+
+    <div style="margin:18px 0">
+        <div style="color:var(--muted)">Amount</div>
+        <div id="btc-amount" style="font-size:28px;color:var(--accent);font-weight:700">Loading…</div>
+    </div>
+
+    <div class="qr-box"><canvas id="qr"></canvas></div>
+
+    <div style="margin-top:18px">
+        <div style="color:var(--muted)">address</div>
+        <div id="btc-address" style="word-break:break-all;font-size:14px;margin-top:6px"></div>
+    </div>
+
+
+</div>
+</div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<script src="main.js"></script>
+
+<script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<script src="main.js"></script>
+
+<script>
+const params = new URLSearchParams(location.search);
+const ORDER_ID = params.get("order");
+
+if(!ORDER_ID){
+  alert("Invalid order");
+  location.href="/checkout.html";
+}
+
+/* Same IDs your backend uses */
+const COINS = {
+ bitcoin:{
+  name:"Bitcoin", symbol:"BTC", logo:"/icons/btc.png",
+  uri:(a,v)=>`bitcoin:${a}?amount=${v}`
+ },
+ ethereum:{
+  name:"Ethereum", symbol:"ETH", logo:"icons/eth.svg",
+  uri:(a,v)=>`ethereum:${a}?value=${v}`
+ },
+ solana:{
+  name:"Solana", symbol:"SOL", logo:"icons/sol.svg",
+  uri:(a,v)=>`solana:${a}?amount=${v}`
+ },
+ tether:{
+  name:"USDT (Eth20)", symbol:"USDT", logo:"icons/usdt.svg",
+  uri:(a,v)=>`ethereum:${a}?value=${v}`
+ }
+};
+
+async function loadOrder(){
+  const res = await fetch(`/api/order/${ORDER_ID}`);
+  if(!res.ok){
+    alert("Order not found");
+    location.href="/checkout.html";
+    return;
+  }
+
+  const order = await res.json();
+  buildPayment(order);
+}
+
+function buildPayment(order){
+  const c = COINS[order.coin];
+  if(!c) return alert("Unsupported currency");
+
+  document.querySelector("h2").textContent = c.name + " payment";
+
+  document.getElementById("btc-amount").textContent =
+    order.cryptoAmount + " " + c.symbol;
+
+  document.getElementById("btc-address").textContent = order.address;
+
+  const uri = c.uri(order.address, order.cryptoAmount);
+
+  QRCode.toCanvas(document.getElementById("qr"), uri, {
+    width: 260,
+    margin: 2,
+    color: { dark:"#c9a84b", light:"#050505" }
+  });
+}
+
+loadOrder();
+</script>
+
+</script>
+
+
+</body>
+</html>
