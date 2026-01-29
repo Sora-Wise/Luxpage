@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         cart.forEach(i => {
             const el = document.createElement('div');
             el.className = 'cart-item';
-            el.innerHTML = `<img class="thumb" src="/images/placeholder-chair.png"><div style="flex:1"><div style="font-weight:700">${i.name}</div><div style="color:var(--muted)">${fmt(i.price)} × <input type="number" min="1" value="${i.qty}" data-id="${i.id}" style="width:72px"/></div></div><div style="text-align:right">${fmt(i.price * i.qty)}<div><button class="remove" data-id="${i.id}">Remove</button></div></div>`;
+            el.innerHTML = `<img class="thumb" src="/images/placeholder-chair.png"><div style="flex:1"><div style="font-weight:700">${i.name}</div><div style="color:var(--muted)">${fmt(i.price)} × <input type="number" min="1" value="${i.qty}" data-id="${i.id}" style="width:72px"/></div>${item.size ? `<div class="muted">Size: ${item.size}</div>` : ""}</div><div style="text-align:right">${fmt(i.price * i.qty)}<div><button class="remove" data-id="${i.id}">Remove</button></div></div>`;
             list.appendChild(el);
         }
         );
